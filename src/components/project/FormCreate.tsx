@@ -20,8 +20,10 @@ type FormType = {
   name: string;
   description: string;
 };
-
-function FormCreactProject() {
+type FormCreactProjectProps = {
+  onClose: () => void;
+};
+function FormCreactProject({ onClose }: FormCreactProjectProps) {
   const [iconProject, setIconProject] = useState<string>("");
   const [idProject, setIdProject] = useState<string>("");
   const dispatch = useDispatch();
@@ -29,7 +31,7 @@ function FormCreactProject() {
     const id = uuidv4();
     const svgString = toSvg(id, 300);
     setIdProject(id);
-    setIconProject(`data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`);
+    setIconProject(svgString);
   }, []);
 
   useEffect(() => {
@@ -46,16 +48,21 @@ function FormCreactProject() {
         value.trim().length > 0 ? null : "Invalid Display Name",
     },
   });
-  const handlerSubmit = useCallback((values: FormType) => {
-    dispatch(
-      addProject({
-        name: values.name,
-        description: values.description,
-        id: idProject,
-        image: iconProject,
-      })
-    );
-  }, []);
+
+  const handlerSubmit = useCallback(
+    (values: FormType) => {
+      dispatch(
+        addProject({
+          name: values.name,
+          description: values.description,
+          id: idProject,
+          image: iconProject,
+        })
+      );
+      onClose();
+    },
+    [iconProject, idProject]
+  );
   return (
     <React.Fragment>
       <form onSubmit={form.onSubmit(handlerSubmit)}>
@@ -63,7 +70,14 @@ function FormCreactProject() {
           <Flex gap="lg">
             <Box onClick={() => generateIcon()}>
               <Tooltip label="refresh">
-                <Avatar size="xl" radius="md" src={iconProject} alt="icon" />
+                <Avatar
+                  size="xl"
+                  radius="md"
+                  src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                    iconProject
+                  )}`}
+                  alt="icon"
+                />
               </Tooltip>
             </Box>
 
@@ -89,7 +103,17 @@ function FormCreactProject() {
             {...form.getInputProps("description")}
           />
           <Group position="right" mt="md">
-            <Button type="submit">Submit</Button>
+            <Button
+              type="button"
+              color="gray"
+              variant="subtle"
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" color="violet" variant="light">
+              New
+            </Button>
           </Group>
         </Stack>
       </form>

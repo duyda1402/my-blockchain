@@ -29,9 +29,12 @@ function ProjectCard({ item, isActive, ...others }: ProjectCardProps) {
     >
       <Group>
         {item.image ? (
-          <Avatar src={item.image} radius="xl" />
+          <Avatar
+            src={`data:image/svg+xml;utf8,${encodeURIComponent(item.image)}`}
+            radius="md"
+          />
         ) : (
-          <Avatar src={item.image} radius="xl" color="violet">
+          <Avatar src={item.image} radius="md" color="violet">
             {item.name.charAt(0)}
           </Avatar>
         )}
