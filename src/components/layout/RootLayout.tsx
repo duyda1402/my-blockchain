@@ -1,41 +1,38 @@
 import { Outlet } from "react-router-dom";
-import { AppShell, Navbar, Container, Button, Stack } from "@mantine/core";
-import React, { useCallback, useState } from "react";
-import EnvButton from "../EnvButton";
-import { EnvType } from "../../common/types";
+import {
+  AppShell,
+  Navbar,
+  Container,
+  Button,
+  Stack,
+  Modal,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import React, { useCallback } from "react";
+import ProjectCard from "../ProjectCard";
+import { ProjectType } from "../../common/types";
+import { RootState } from "../../store/store";
+import { useSelector } from "react-redux";
 
 function RootLayout() {
-  const menu: EnvType[] | null = (() => {
-    const envs = localStorage.getItem("envs");
-    if (!envs) return null;
-    return JSON.parse(envs);
-  })();
-  const [curActive, setCurActive] = useState(() => {
-    const envId = localStorage.getItem("envActive");
-    if (menu?.some((env: EnvType) => env.id === envId)) {
-      console.log(menu);
-      return envId;
-    }
-    return menu ? menu[0] : null;
-  });
-  const handlerEnvButton = useCallback((id: string) => {
-    setCurActive(id);
-    localStorage.setItem("envActive", id);
-  }, []);
+  // Other code such as selectors can use the imported `RootState` type
+  const projects = useSelector((state: RootState) => state.project.list);
+  const [opened, { open, close }] = useDisclosure(false);
+  const handlerEnvButton = useCallback((id: string) => {}, []);
   return (
     <AppShell
       padding="md"
       navbar={
         <Navbar width={{ base: 250 }} height="100vh" p="xs">
           <Stack py="md">
-            {menu && menu[0] && (
+            {projects && projects[0] && (
               <React.Fragment>
-                {menu.map((item: EnvType) => {
+                {projects.map((item: ProjectType) => {
                   return (
                     <React.Fragment key={item.id}>
-                      <EnvButton
+                      <ProjectCard
                         item={item}
-                        isActive={curActive === item.id}
+                        //isActive={curActive === item.id}
                         onClick={() => handlerEnvButton(item.id)}
                       />
                     </React.Fragment>
@@ -43,9 +40,14 @@ function RootLayout() {
                 })}
               </React.Fragment>
             )}
-            <Button variant="light" color="violet">
+            <Button variant="light" color="violet" onClick={open}>
               New
             </Button>
+            <Modal
+              opened={opened}
+              onClose={close}
+              title="Create product"
+            ></Modal>
           </Stack>
         </Navbar>
       }
@@ -54,8 +56,8 @@ function RootLayout() {
           backgroundColor:
             theme.colorScheme === "dark"
               ? theme.colors.dark[8]
-              : theme.colors.gray[0]
-        }
+              : theme.colors.gray[0],
+        },
       })}
     >
       <Container py="md">

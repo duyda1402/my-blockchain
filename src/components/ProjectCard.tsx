@@ -1,12 +1,12 @@
-import { EnvType } from "../common/types";
+import { ProjectType } from "../common/types";
 import { Group, Avatar, Text, UnstyledButton } from "@mantine/core";
 
-interface EnvButtonProps extends React.ComponentPropsWithoutRef<"button"> {
-  item: EnvType;
+interface ProjectCardProps extends React.ComponentPropsWithoutRef<"button"> {
+  item: ProjectType;
   isActive?: boolean;
 }
 
-function EnvButton({ item, isActive, ...others }: EnvButtonProps) {
+function ProjectCard({ item, isActive, ...others }: ProjectCardProps) {
   return (
     <UnstyledButton
       sx={(theme) => ({
@@ -22,8 +22,8 @@ function EnvButton({ item, isActive, ...others }: EnvButtonProps) {
           backgroundColor:
             theme.colorScheme === "dark"
               ? theme.colors.dark[8]
-              : theme.colors.violet[1]
-        }
+              : theme.colors.violet[1],
+        },
       })}
       {...others}
     >
@@ -48,4 +48,4 @@ function EnvButton({ item, isActive, ...others }: EnvButtonProps) {
     </UnstyledButton>
   );
 }
-export default EnvButton;
+export default ProjectCard;
