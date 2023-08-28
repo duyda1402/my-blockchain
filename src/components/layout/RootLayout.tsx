@@ -25,9 +25,8 @@ function RootLayout() {
   }, []);
   return (
     <AppShell
-     
       navbar={
-        <Navbar width={{ base: 250 }} height ="100%" p="xs">
+        <Navbar width={{ base: 250 }} height="100%" p="xs">
           <Stack py="md">
             {projectsState && projectsState.list[0] && (
               <React.Fragment>
@@ -62,7 +61,7 @@ function RootLayout() {
         },
       })}
     >
-      <Container py="md">
+      <Container py="md" size="xl">
         <Outlet />
       </Container>
     </AppShell>
