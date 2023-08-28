@@ -1,4 +1,4 @@
-import { ProjectType } from "../common/types";
+import { ProjectType } from "../../common/types";
 import { Group, Avatar, Text, UnstyledButton } from "@mantine/core";
 
 interface ProjectCardProps extends React.ComponentPropsWithoutRef<"button"> {
@@ -32,12 +32,12 @@ function ProjectCard({ item, isActive, ...others }: ProjectCardProps) {
           <Avatar src={item.image} radius="xl" />
         ) : (
           <Avatar src={item.image} radius="xl" color="violet">
-            {item.displayName.charAt(0)}
+            {item.name.charAt(0)}
           </Avatar>
         )}
         <div style={{ flex: 1 }}>
           <Text size="sm" weight={500} lineClamp={1}>
-            {item.displayName}
+            {item.name}
           </Text>
 
           <Text color="dimmed" size="xs">

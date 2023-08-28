@@ -1,18 +1,19 @@
-import { Outlet } from "react-router-dom";
 import {
   AppShell,
-  Navbar,
-  Container,
   Button,
-  Stack,
+  Container,
   Modal,
+  Navbar,
+  Stack,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import React, { useCallback } from "react";
-import ProjectCard from "../ProjectCard";
+import { useSelector } from "react-redux";
+import { Outlet } from "react-router-dom";
 import { ProjectType } from "../../common/types";
 import { RootState } from "../../store/store";
-import { useSelector } from "react-redux";
+import FormCreactProject from "../project/FormCreate";
+import ProjectCard from "../project/ProjectCard";
 
 function RootLayout() {
   // Other code such as selectors can use the imported `RootState` type
@@ -43,11 +44,9 @@ function RootLayout() {
             <Button variant="light" color="violet" onClick={open}>
               New
             </Button>
-            <Modal
-              opened={opened}
-              onClose={close}
-              title="Create product"
-            ></Modal>
+            <Modal opened={opened} onClose={close} withCloseButton={false}>
+              <FormCreactProject />
+            </Modal>
           </Stack>
         </Navbar>
       }
