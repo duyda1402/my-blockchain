@@ -1,7 +1,100 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useForm } from "@mantine/form";
+import {
+  TextInput,
+  Button,
+  Group,
+  Stack,
+  Textarea,
+  Box,
+  Avatar,
+  Tooltip,
+  Flex,
+} from "@mantine/core";
+import { v4 as uuidv4 } from "uuid";
+import { toSvg } from "jdenticon";
+import { useDispatch } from "react-redux";
+import { addProject } from "../../store/features/project";
+
+type FormType = {
+  name: string;
+  description: string;
+};
 
 function FormCreactProject() {
-  return <React.Fragment>
-    
-  </React.Fragment>;
+  const [iconProject, setIconProject] = useState<string>("");
+  const [idProject, setIdProject] = useState<string>("");
+  const dispatch = useDispatch();
+  const generateIcon = useCallback(() => {
+    const id = uuidv4();
+    const svgString = toSvg(id, 300);
+    setIdProject(id);
+    setIconProject(`data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`);
+  }, []);
+
+  useEffect(() => {
+    generateIcon();
+  }, []);
+
+  const form = useForm<FormType>({
+    initialValues: {
+      name: "",
+      description: "",
+    },
+    validate: {
+      name: (value) =>
+        value.trim().length > 0 ? null : "Invalid Display Name",
+    },
+  });
+  const handlerSubmit = useCallback((values: FormType) => {
+    dispatch(
+      addProject({
+        name: values.name,
+        description: values.description,
+        id: idProject,
+        image: iconProject,
+      })
+    );
+  }, []);
+  return (
+    <React.Fragment>
+      <form onSubmit={form.onSubmit(handlerSubmit)}>
+        <Stack>
+          <Flex gap="lg">
+            <Box onClick={() => generateIcon()}>
+              <Tooltip label="refresh">
+                <Avatar size="xl" radius="md" src={iconProject} alt="icon" />
+              </Tooltip>
+            </Box>
+
+            <Stack sx={{ flexGrow: 1 }}>
+              <TextInput
+                withAsterisk
+                label="Project id"
+                value={idProject}
+                disabled
+              />
+            </Stack>
+          </Flex>
+          <TextInput
+            withAsterisk
+            sx={{ flexGrow: 1 }}
+            label="Project Name"
+            placeholder="Project 1"
+            {...form.getInputProps("name")}
+          />
+          <Textarea
+            placeholder="Your description"
+            label="Description"
+            {...form.getInputProps("description")}
+          />
+          <Group position="right" mt="md">
+            <Button type="submit">Submit</Button>
+          </Group>
+        </Stack>
+      </form>
+    </React.Fragment>
+  );
 }
+
+export default FormCreactProject;

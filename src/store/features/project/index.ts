@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../../store";
+import { KEY_PROJECT } from "../../../common";
 import { ProjectType } from "../../../common/types";
+
 // Define a type for the slice state
 interface ProjectState {
   list: ProjectType[];
@@ -9,7 +10,7 @@ interface ProjectState {
 
 // Get init project to localStorage
 const getInitialList = () => {
-  const data = localStorage.getItem("projects");
+  const data = localStorage.getItem(KEY_PROJECT);
   if (!data) return [];
   return JSON.parse(data);
 };
@@ -28,6 +29,10 @@ export const projectSlice = createSlice({
     addProject: (state, action: PayloadAction<ProjectType>) => {
       const curList = state.list;
       state.list = curList.concat(action.payload);
+      localStorage.setItem(
+        KEY_PROJECT,
+        JSON.stringify(curList.concat(action.payload))
+      );
     },
   },
 });
